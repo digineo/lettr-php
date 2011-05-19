@@ -45,7 +45,7 @@
      * @param $email string E-Mail-Adresse des Empfängers
      */
     public static function unsubscribe($email){
-      $recipient = new Lettr_Recipient();
+      $recipient = new Lettr_Recipient();	  
       return $recipient->delete_by_email($email);
     }
     

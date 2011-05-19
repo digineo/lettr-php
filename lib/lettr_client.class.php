@@ -102,7 +102,7 @@
       
       $header[] = "Accept: " . self::$credentials["content_type"];
       $header[] = "Content-Type: " . self::$credentials["content_type"];
-	  $header[] = "X-AUTH: " . self::$credentials["api_key"];
+	  $header[] = "X-Lettr-API-key: " . self::$credentials["api_key"];
           
       $ch  = curl_init();
       
