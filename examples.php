@@ -7,7 +7,7 @@
   /**
    * Setzt die Zugangsdaten zur Lettr-API.
    */
-  Lettr::set_credentials(array("username"=>"testuser", "password"=>"123456"));
+  Lettr::set_credentials("APIKEY");
   
   /**
    * Meldet einen Newsletter-Empfänger ab.

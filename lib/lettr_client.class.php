@@ -12,7 +12,7 @@
     /**
      * Setzt die Zugangsdaten zur Lettr-API.
      *  
-     * @var array assoziativ, enthält 'username' und 'password'
+     * @var array assoziativ, enthält 'api-key'
      */
     private static $credentials = array();
     
@@ -31,12 +31,16 @@
      * 
      * Schmeißt Lettr_IllegalArgumentException, wenn sie unvollständig gesetzt werde
      * 
-     * @param array $credentials assoziativ, enthält 'username' und 'password'
+     * @param array $credentials assoziativ, enthält 'api_key'
      */
-    public static function set_credentials($credentials){
-      Lettr_Validation::presence_of('credentials', $credentials, array("username", "password"));
-      
+    public static function set_credentials($api_key){
+      if(!$api_key)
+	  {
+	  	throw new Lettr_IllegalArgumentException("API KEY ist leer oder nicht definiert.");
+	  }
+      $credentials = array();
       $credentials["site"] = "https://lettr.de/";
+	  $credentials["api_key"] = $api_key;
       $credentials["content_type"] = "application/json";
       
       self::$credentials = $credentials;
@@ -98,6 +102,7 @@
       
       $header[] = "Accept: " . self::$credentials["content_type"];
       $header[] = "Content-Type: " . self::$credentials["content_type"];
+	  $header[] = "X-AUTH: " . self::$credentials["api_key"];
           
       $ch  = curl_init();
       
