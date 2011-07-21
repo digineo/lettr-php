@@ -25,11 +25,9 @@
      * @param array $attributes
      */
     public function deliver_without_template($attributes){
-      Lettr_Validation::presence_of('attributes', $attributes, array("recipient", "subject", "text"));
-      
-      $identifier = md5($attributes["subject"]);
-      
-      return $this->customId('post', $identifier, "deliver_by_identifier", array("delivery"=>$attributes));
+      Lettr_Validation::presence_of('attributes', $attributes, array("delivery[recipient]", "delivery[subject]"), array("delivery[text]", "delivery[html]", "files\[(.*)\]"));
+      $identifier = md5($attributes["delivery[subject]"]);
+      return $this->customId('post', $identifier, "deliver_by_identifier", $attributes);
     }
     
     /**
@@ -44,9 +42,8 @@
      * @param array $attributes Attribute der E-Mail
      */
     public function deliver_with_template($mailing_id, $attributes){
-      Lettr_Validation::presence_of('attributes', $attributes, array("recipient", "subject"));
-      
-      return $this->customId('post', $mailing_id, "deliveries", array("delivery"=>$attributes));
+      Lettr_Validation::presence_of('attributes', $attributes, array("delivery[recipient]", "delivery[subject]"));
+      return $this->customId('post', $mailing_id, "deliveries", $attributes);
     }
     
     

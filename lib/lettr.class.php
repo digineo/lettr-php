@@ -60,7 +60,7 @@
      */
     public static function mail($to, $subject, $message){
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_without_template(array("recipient"=>$to, "subject"=>$subject, "text"=>$message));
+      return $delivery->deliver_without_template(array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject, "delivery[text]"=>$message));
     }
     
     /**
@@ -73,11 +73,11 @@
      * @param $message string Text der E-Mail
      */
     public static function multipart_mail($to, $subject, $multiparts=array()){
-      if(empty($multiparts["text"]) || empty($multiparts["html"])) {
+      if(empty($multiparts["delivery[text]"]) && empty($multiparts["delivery[html]"])) {
         throw new Lettr_IllegalArgumentException("Als multipart muss mindestens 'text' oder 'html' angegeben werden.");
       }
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_without_template(array_merge($multiparts, array("recipient"=>$to, "subject"=>$subject)));
+      return $delivery->deliver_without_template(array_merge($multiparts, array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject)));
     }
     
     /**
@@ -90,7 +90,7 @@
      */
     public static function mail_with_template($to, $subject, $mailing_identifier, $placeholders=array()){
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_with_template($mailing_identifier, array_merge($placeholders, array("recipient"=>$to, "subject"=>$subject)));
+      return $delivery->deliver_with_template($mailing_identifier, array_merge($placeholders, array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject)));
     }
   }
 ?>

@@ -40,7 +40,7 @@
 	  }
       $credentials = array();
       $credentials["site"] = "https://lettr.de/";
-	  $credentials["api_key"] = $api_key;
+	    $credentials["api_key"] = $api_key;
       $credentials["content_type"] = "application/json";
       
       self::$credentials = $credentials;
@@ -95,14 +95,11 @@
     protected function send($url,$method,$data=null){
       self::check_credentials();
       $this->errors = null;
-      
-      if(is_array($data)){
-        $data = json_encode($data);
-      }
-      
+
       $header[] = "Accept: " . self::$credentials["content_type"];
-      $header[] = "Content-Type: " . self::$credentials["content_type"];
-	  $header[] = "X-Lettr-API-key: " . self::$credentials["api_key"];
+      // Wir lassen den Header von cURL generieren
+      // $header[] = "Content-Type: " . self::$credentials["content_type"];
+      $header[] = "X-Lettr-API-key: " . self::$credentials["api_key"];
           
       $ch  = curl_init();
       
@@ -113,6 +110,7 @@
       curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
       curl_setopt($ch, CURLOPT_POSTFIELDS,     $data);
       
+      // TODO: Benutzername und Kennwort müssen immer vorhanden sein, Prüfung an den Anfang bauen oder Exception werfen
       if(self::$credentials["username"]){
         curl_setopt($ch, CURLOPT_USERPWD, self::$credentials["username"].":".self::$credentials["password"]);
       }
@@ -125,7 +123,6 @@
       */
       $data = curl_exec($ch);
       
-      
       if (curl_errno($ch)) {
         // CURL-Fehler
         throw new Lettr_CurlException(curl_error($ch),curl_errno($ch));
@@ -134,7 +131,7 @@
         curl_close($ch);
         
         $http_code = $info['http_code'];
-                 
+
         if($http_code==422){ // Unprocessable Entity
           #//TODO wird nur ein einzelner Fehler behandelt 
           #$this->errors = $this->xml2object($data);
