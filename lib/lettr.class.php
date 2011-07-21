@@ -34,9 +34,9 @@
      * @param $email string E-Mail-Adresse des Empfängers
      * @param $additional_info array (optional) assoziativ, weitergehende Informationen
      */
-    public static function subscribe($email, $additional_info=array()){
+    public static function subscribe($email, $additional_info = array()){
       $recipient = new Lettr_Recipient();
-      return $recipient->create(array_merge($additional_info, array("email"=>$email)));
+      return $recipient->create(array_merge($additional_info, array("email" => $email)));
     }
     
     /**
@@ -60,7 +60,7 @@
      */
     public static function mail($to, $subject, $message){
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_without_template(array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject, "delivery[text]"=>$message));
+      return $delivery->deliver_without_template(array("delivery[recipient]" => $to, "delivery[subject]" => $subject, "delivery[text]" => $message));
     }
     
     /**
@@ -73,11 +73,11 @@
      * @param $message string Text der E-Mail
      */
     public static function multipart_mail($to, $subject, $multiparts=array()){
-      if(empty($multiparts["delivery[text]"]) && empty($multiparts["delivery[html]"])) {
+      if (empty($multiparts["delivery[text]"]) && empty($multiparts["delivery[html]"])) {
         throw new Lettr_IllegalArgumentException("Als multipart muss mindestens 'text' oder 'html' angegeben werden.");
       }
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_without_template(array_merge($multiparts, array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject)));
+      return $delivery->deliver_without_template(array_merge($multiparts, array("delivery[recipient]" => $to, "delivery[subject]" => $subject)));
     }
     
     /**
@@ -88,9 +88,9 @@
      * @param $mailing_identifier string Selbstgesetzter Identifier des zu verwendenden Templates
      * @param $placeholders array assozativ, verwendete Platzhalter im zu verwendenden Template
      */
-    public static function mail_with_template($to, $subject, $mailing_identifier, $placeholders=array()){
+    public static function mail_with_template($to, $subject, $mailing_identifier, $placeholders = array()){
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_with_template($mailing_identifier, array_merge($placeholders, array("delivery[recipient]"=>$to, "delivery[subject]"=>$subject)));
+      return $delivery->deliver_with_template($mailing_identifier, array_merge($placeholders, array("delivery[recipient]" => $to, "delivery[subject]" => $subject)));
     }
   }
 ?>

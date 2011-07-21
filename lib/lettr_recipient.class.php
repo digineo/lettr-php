@@ -26,7 +26,7 @@
      * @param array $attributes
      */
     public function create($attributes){
-      return parent::create(array("delivery[recipient]"=>$attributes));
+      return parent::create(array("delivery[recipient]" => $attributes));
     }
     
     /**
@@ -35,7 +35,7 @@
      * @param string $email E-Mail-Adresse des Empfängers.
      */
     public function delete_by_email($email) {
-      return $this->custom("delete", "destroy_by_email", array("email"=>$email));
+      return $this->custom("delete", "destroy_by_email", array("email" => $email));
     }
   }
 ?>

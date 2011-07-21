@@ -14,38 +14,38 @@
     
     protected function __construct($path){
       $this->client = new Lettr_Client();
-      $this->path    = $path;
+      $this->path   = $path;
     }
     
     public function get($id){
-      return $this->query('get',$this->path.'/'.$id);
+      return $this->query('get', $this->path . '/' . $id);
     }
     
     public function create($data){
       if(!is_array($data)){
         throw new Lettr_IllegalArgumentException("Erwarte ein assoziatives Array als Parameter");
       }
-      return $this->query('post', $this->path,$data);
+      return $this->query('post', $this->path, $data);
     }
     
-    public function update($id,$data){
-      return $this->query('put', $this->path.'/'.$id,$data);
+    public function update($id, $data){
+      return $this->query('put', $this->path . '/' . $id, $data);
     }
     
     public function delete($id){
-      return $this->query('delete', $this->path.'/'.$id);
+      return $this->query('delete', $this->path . '/' . $id);
     }
     
-    public function custom($method,$action,$data=null){
-      return $this->query($method,$this->path."/$action",$data);
+    public function custom($method, $action, $data = null){
+      return $this->query($method, $this->path . "/$action", $data);
     }
     
-    public function customId($method, $id, $action, $data=null){
-      return $this->query($method,$this->path."/$id/$action",$data);
+    public function customId($method, $id, $action, $data = null){
+      return $this->query($method, $this->path . "/$id/$action", $data);
     }
     
-    protected function query($method,$path,$data=null){
-      $res = $this->client->$method($path,$data);
+    protected function query($method, $path, $data = null){
+      $res = $this->client->$method($path, $data);
       return $res['data'];
     }
   }
