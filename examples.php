@@ -27,6 +27,14 @@
   Lettr::mail("test@example.com", "Test-Betreff", "Test-Text");
   
   /**
+   * Verschickt eine E-Mail über die Lettr-API ohne Template. Setze dabei die
+   * Adresse des anfragenden Kunden ins Reply-To.
+   * 
+   * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.
+   */
+  Lettr::mail("info@example.org", "Test-Betreff", "Test-Text", array('reply_to'=>'customer1@example.com'));
+  
+  /**
    * Verschickt eine Multipart-E-Mail über die Lettr-API ohne Template
    * 
    * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.

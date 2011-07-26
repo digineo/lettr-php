@@ -57,10 +57,12 @@
      * @param $to string E-Mail-Adresse des Empfängers
      * @param $subject string Betreff der E-Mail
      * @param $message string Text der E-Mail
-     */
-    public static function mail($to, $subject, $message){
+     * @param $options array Zusätzliche optionen wie reply_to
+     *      */
+    public static function mail($to, $subject, $message, $options=array()){
+      $options = array_merge(array("delivery[recipient]" => $to, "delivery[subject]" => $subject, "delivery[text]" => $message), $options);
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_without_template(array("delivery[recipient]" => $to, "delivery[subject]" => $subject, "delivery[text]" => $message));
+      return $delivery->deliver_without_template($options);
     }
     
     /**
