@@ -109,11 +109,12 @@
       curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
       curl_setopt($ch, CURLOPT_POSTFIELDS,     $data);
       
-      // Auf Benutzernamen und Kennwort prüfen, Lettr sonst nicht benutzbar!
+      // Auf Benutzernamen und Kennwort prüfen!
       if(self::$credentials["username"]){
         curl_setopt($ch, CURLOPT_USERPWD, self::$credentials["username"] . ":" . self::$credentials["password"]);
       } else {
-        throw new Lettr_IllegalArgumentException('Benutzerdaten für Lettr nicht gefunden');
+        // Benutzername und Kennwort nicht erforderlich?
+        //throw new Lettr_IllegalArgumentException('Benutzerdaten für Lettr nicht gefunden');
       }
       
       /*
@@ -164,6 +165,9 @@
             break;
           case 418:   // I'm a Teapot - Soll ja vorkommen ;-)
             throw new Lettr_ClientErrorException('418 I\'m a Teapot - Sorry, wir liefern nur an Kaffeekannen ;-)', 418);
+            break;
+          case 422:   // Unprocessable Entity
+            throw new Lettr_ClientErrorException('422 Unprocessable Entity - Datenformat fehlerhaft', 422);
             break;
           case 500:   // Internal Server Error - Anfrage später erneut absenden
             throw new Lettr_ServerErrorException('500 Internal Server Error - Der Lettr-Service steht gerade nicht zur Verfügung', 500);
