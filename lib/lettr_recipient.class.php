@@ -26,7 +26,7 @@
      * @param array $attributes
      */
     public function create($attributes){
-      return parent::create(array("delivery[recipient]" => $attributes));
+      return parent::create(array("recipient" => $attributes));
     }
     
     /**

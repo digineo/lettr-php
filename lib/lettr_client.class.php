@@ -31,18 +31,23 @@
      * 
      * Schmeißt Lettr_IllegalArgumentException, wenn sie unvollständig gesetzt werde
      * 
-     * @param array $credentials assoziativ, enthält 'api_key'
+     * @param string/array $credentials Enthält entweder einen API-Key als String oder ein assoziatives Array bestehend aus 'username' und 'password' mit entsprechenden Werten.
      */
-    public static function set_credentials($api_key){
-      if(!$api_key)
-      {
-        throw new Lettr_IllegalArgumentException("API KEY ist leer oder nicht definiert.");
-      }
+    public static function set_credentials($api_key_or_username_and_password){
       $credentials = array();
       $credentials["site"] = "https://lettr.de/";
-	    $credentials["api_key"] = $api_key;
-      // Header wird von cURL generiert
-      //$credentials["content_type"] = "application/json";
+      
+      if(!$api_key_or_username_and_password)
+      {
+        throw new Lettr_IllegalArgumentException("API-Key ist leer oder nicht definiert.");
+      } elseif (is_string($api_key_or_username_and_password)){
+        $credentials["api_key"] = $api_key_or_username_and_password;
+      }
+      elseif (is_array($api_key_or_username_and_password)) {
+        Lettr_Validation::presence_of('api_key_or_username_and_password', $api_key_or_username_and_password, array("username", "password"));
+        $credentials = array_merge($credentials, $api_key_or_username_and_password);
+      } else {
+      }
       self::$credentials = $credentials;
     }
     
@@ -95,26 +100,24 @@
     protected function send($url, $method, $data = null){
       self::check_credentials();
       $this->errors = null;
-
-      $header[] = "Accept: " . self::$credentials["content_type"];
-      $header[] = "X-Lettr-API-key: " . self::$credentials["api_key"];
-      // Wir lassen den Header von cURL generieren
-      // $header[] = "Content-Type: " . self::$credentials["content_type"];
-          
+      
+      $header = array("Accept: application/json");
+      
+      if(!empty(self::$credentials["api_key"])) {
+        $header[] = "X-Lettr-API-key: " . self::$credentials["api_key"];
+      }
+      
       $ch  = curl_init();
       curl_setopt($ch, CURLOPT_URL,            self::$credentials["site"] . $url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_TIMEOUT,        15);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  $method);
       curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
-      curl_setopt($ch, CURLOPT_POSTFIELDS,     $data);
+      curl_setopt($ch, CURLOPT_POSTFIELDS,     self::serialized_params($data));
       
       // Auf Benutzernamen und Kennwort prüfen!
-      if(self::$credentials["username"]){
+      if(!empty(self::$credentials["username"])){
         curl_setopt($ch, CURLOPT_USERPWD, self::$credentials["username"] . ":" . self::$credentials["password"]);
-      } else {
-        // Benutzername und Kennwort nicht erforderlich?
-        //throw new Lettr_IllegalArgumentException('Benutzerdaten für Lettr nicht gefunden');
       }
       
       /*
@@ -167,7 +170,7 @@
             throw new Lettr_ClientErrorException('418 I\'m a Teapot - Sorry, wir liefern nur an Kaffeekannen ;-)', 418);
             break;
           case 422:   // Unprocessable Entity
-            throw new Lettr_ClientErrorException('422 Unprocessable Entity - Datenformat fehlerhaft', 422);
+            throw new Lettr_UnprocessableEntityException("422 Unprocessable Entity - Datenformat fehlerhaft (".print_r($data, true).")", 422);
             break;
           case 500:   // Internal Server Error - Anfrage später erneut absenden
             throw new Lettr_ServerErrorException('500 Internal Server Error - Der Lettr-Service steht gerade nicht zur Verfügung', 500);
@@ -179,17 +182,31 @@
             throw new Lettr_ServerErrorException('503 Service Unavailable - Der Lettr-Service steht gerade nicht zur Verfügung', 503);
             break;
         }
-
-// 422 nicht definiert - wann soll der auftreten?
-//        if($http_code==422){ // Unprocessable Entity
-//          #//TODO wird nur ein einzelner Fehler behandelt 
-//          #$this->errors = $this->xml2object($data);
-//          #throw new Lettr_UnprocessableEntityException($this->errors->errors);
-//          throw new Lettr_UnprocessableEntityException($data, 422);
-//        }
-// Wird normalerweise nicht gebraucht, sicherheitshalber nur auskommentiert
-//        return array('content_type'=>$info['content_type'], 'data'=>json_decode($data));
       }
+    }
+    
+    public static function serialized_params($params, $prefix="", $return_as_hash=true) {
+      $results = array();
+      
+      foreach($params as $key=>$value) {
+        if(is_array($value)){
+          $sub_results = self::serialized_params($value, empty($prefix) ? $key : $prefix.'['.$key.']', false);
+          $results = array_merge($results, $sub_results);
+        } else {
+          array_push($results, array(empty($prefix) ? $key : $prefix.'['.$key.']', $value));
+        }
+      }
+      
+      if($return_as_hash) {
+        $final_results = array();
+        
+        foreach($results as $result) {
+          $final_results[$result[0]] = $result[1];
+        }
+        return($final_results);
+      }
+      
+      return($results);
     }
   }
 ?>

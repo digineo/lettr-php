@@ -40,7 +40,7 @@
    * @access public
    * @author Digineo GmbH, kontakt@digineo.de, http://www.digineo.de
    */
-  class Lettr_UnprocessableEntityException extends Lettr_RestException {};
+  class Lettr_UnprocessableEntityException extends Lettr_ClientErrorException {};
   
   /**
    * @package Lettr

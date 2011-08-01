@@ -7,7 +7,12 @@
   /**
    * Setzt die Zugangsdaten zur Lettr-API.
    */
-  Lettr::set_credentials("APIKEY");
+  Lettr::set_credentials("API-KEY 123");
+  
+  /**
+   * Setzt die Zugangsdaten zur Lettr-API.
+   */
+  Lettr::set_credentials(array("username"=>"foobar@example.com", "password"=>"bar"));
   
   /**
    * Meldet einen Newsletter-Empfänger ab.
@@ -35,11 +40,28 @@
   Lettr::mail("info@example.org", "Test-Betreff", "Test-Text", array('reply_to'=>'customer1@example.com'));
   
   /**
+   * Verschickt eine E-Mail über die Lettr-API ohne Template. Setze dabei die
+   * Absender-Adresse auf eine bestätigte Absender-Adresse, die von der Standard-
+   * Einstellung abweicht.
+   * 
+   * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.
+   */
+  Lettr::mail("info@example.org", "Test-Betreff", "Test-Text", array('sender_address'=>"fummbar@example.net"));
+  
+  /**
    * Verschickt eine Multipart-E-Mail über die Lettr-API ohne Template
    * 
    * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.
    */
-  Lettr::multipart_mail("test@example.com", "Test-Betreff", array("text"=>"Hallo Welt", "html"=>"<h1>Hallo Welt</h1>"));
+  Lettr::multipart_mail("test@example.com", "Test-Betreff", array("text"=>"text/plain", "html"=>"<html><body>text/html</body></html>"));
+  
+  /**
+   * Verschickt eine Multipart-E-Mail über die Lettr-API ohne Template mit Attachment
+   * 
+   * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.
+   */
+  Lettr::multipart_mail("test@example.com", "Test-Betreff", array("text"=>"text/plain", "html"=>"<html><body>text/html</body></html>"), array("examples.php"=>"@examples.php"));
+  
   
   /**
    * Verschickt eine E-Mail über die Lettr-API mit Template
