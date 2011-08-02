@@ -60,7 +60,7 @@
    * 
    * Der Empfänger der E-Mail muss nicht notwendiger Weise auch Newsletter-Empfänger sein.
    */
-  Lettr::multipart_mail("test@example.com", "Test-Betreff", array("text"=>"text/plain", "html"=>"<html><body>text/html</body></html>"), array("examples.php"=>"@examples.php"));
+  Lettr::multipart_mail("test@example.com", "Test-Betreff", array("text"=>"text/plain", "html"=>"<html><body>text/html</body></html>", "files"=>array("examples.php"=>"@examples.php")));
   
   
   /**

@@ -72,16 +72,22 @@
      * 
      * @param $to string E-Mail-Adresse des Empfängers
      * @param $subject string Betreff der E-Mail
-     * @param $message string Text der E-Mail
+     * @param $multiparts array text/html (string), ggfs. files (array)
      */
     public static function multipart_mail($to, $subject, $multiparts=array(), $attachments=array()){
       if (empty($multiparts["text"]) && empty($multiparts["html"])) {
         throw new Lettr_IllegalArgumentException("Als multipart muss mindestens 'text' oder 'html' angegeben werden.");
       }
+      
       $delivery_options = array("delivery" => array_merge($multiparts, array("recipient" => $to, "subject" => $subject)));
       
-      if(!empty($attachments)) {
-        $delivery_options["files"] = $attachments;
+      if (!empty($multiparts["files"])) {
+        if(!is_array($multiparts["files"])) {
+          throw new Lettr_IllegalArgumentException("Als multipart 'files' muss ein assoziatives Array sein.");
+        } else {
+          $delivery_options["files"] = $multiparts["files"];
+          unset($delivery_options["delivery"]["files"]); # Nach dem Merging Aufräumen
+        }
       }
       
       $delivery = new Lettr_Delivery();
