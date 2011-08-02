@@ -73,13 +73,14 @@
      * @param $to string E-Mail-Adresse des Empfängers
      * @param $subject string Betreff der E-Mail
      * @param $multiparts array text/html (string), ggfs. files (array)
-     */
-    public static function multipart_mail($to, $subject, $multiparts=array(), $attachments=array()){
+     * @param $options array Zusätzliche optionen wie reply_to oder sender_address
+     *      */
+    public static function multipart_mail($to, $subject, $multiparts=array(), $options=array()){
       if (empty($multiparts["text"]) && empty($multiparts["html"])) {
         throw new Lettr_IllegalArgumentException("Als multipart muss mindestens 'text' oder 'html' angegeben werden.");
       }
       
-      $delivery_options = array("delivery" => array_merge($multiparts, array("recipient" => $to, "subject" => $subject)));
+      $delivery_options = array("delivery" => array_merge($multiparts, array("recipient" => $to, "subject" => $subject), $options));
       
       if (!empty($multiparts["files"])) {
         if(!is_array($multiparts["files"])) {
@@ -101,10 +102,11 @@
      * @param $subject string Betreff der E-Mail
      * @param $mailing_identifier string Selbstgesetzter Identifier des zu verwendenden Templates
      * @param $placeholders array assozativ, verwendete Platzhalter im zu verwendenden Template
-     */
-    public static function mail_with_template($to, $subject, $mailing_identifier, $placeholders = array()){
+     * @param $options array Zusätzliche optionen wie reply_to oder sender_address
+     *      */
+    public static function mail_with_template($to, $subject, $mailing_identifier, $placeholders = array(), $options=array()){
       $delivery = new Lettr_Delivery();
-      return $delivery->deliver_with_template($mailing_identifier, array("delivery" => array_merge($placeholders, array("recipient"=>$to, "subject"=>$subject))));
+      return $delivery->deliver_with_template($mailing_identifier, array("delivery" => array_merge($placeholders, array("recipient"=>$to, "subject"=>$subject), $options)));
     }
   }
 ?>
